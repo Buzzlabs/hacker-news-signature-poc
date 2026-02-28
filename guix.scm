@@ -1,10 +1,11 @@
 (use-modules
   (gnu packages clojure)
   (gnu packages java)
-  (guix packages)
+  (guix build-system clojure)
+  (guix gexp)
   (guix git)
   (guix git-download)
-  (guix build-system clojure)
+  (guix packages)
   ((guix licenses) #:prefix license:))
 
 (define clojure-hato
@@ -37,20 +38,35 @@ In general, it will feel familiar to users of http clients like clj-http. The AP
     (license license:expat)))
 
 (define hacker-news-signature-poc
-  (package
-    (name "hacker-news-signature-poc")
-    (version "0.0.0")
-    (home-page "https://contaaberta.info")
-    (source (git-checkout (url (dirname (current-filename)))))
-    (build-system clojure-build-system)
-    (propagated-inputs (list clojure-hato clojure-data-json))
-    (arguments
-     (list
-      #:jdk openjdk17 ; JDK 11 or newer is required
-      #:tests? #f
-      #:doc-dirs `(list)))
-    (synopsis "")
-    (description "")
-    (license license:expat))) ; TODO: fix the license
+  (let ((commit "693b05cc4c23b0f55dae5600baa104a4f0941f85"))
+    (package
+      (name "hacker-news-signature-poc")
+      (version "0.0.0")
+      (home-page "https://github.com/Buzzlabs/hacker-news-signature-poc")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hgal4ypwnyzcw06m694233p1gdv0i2h8zadbcryhcqa0p49nxwy"))))
+      (build-system clojure-build-system)
+      (propagated-inputs (list clojure-hato clojure-data-json))
+      (arguments
+       (list
+        #:jdk openjdk17 ; JDK 11 or newer is required
+        #:tests? #f
+        #:source-dirs `(list "src" "resources")
+        #:doc-dirs `(list)
+        #:phases #~(modify-phases %standard-phases
+                     (add-before 'build 'insert-hash
+                       (lambda* (#:key outputs #:allow-other-keys)
+                         (substitute* "./resources/buzzlabs/hacker_news_signature/our_sig"
+                           (("^.*$") (assoc-ref outputs "out"))))))))
+      (synopsis "")
+      (description "")
+      (license license:expat)))) ; TODO: fix the license
 
 hacker-news-signature-poc
