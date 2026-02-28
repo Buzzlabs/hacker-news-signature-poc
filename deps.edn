@@ -1,0 +1,17 @@
+{:paths ["src" "resources"]
+ :deps
+ {org.clojure/clojure {:mvn/version "1.12.4"}
+  org.clojure/data.json {:mvn/version "2.5.2"}
+  hato/hato {:mvn/version "1.0.0"}}
+
+ :aliases
+ {:run {:main-opts ["-m" "buzzlabs.hacker-news-signature"]}
+  :dev
+  {:extra-paths ["dev"]
+   :extra-deps
+   {io.github.tonsky/clj-reload {:mvn/version "1.0.0"}}}
+
+  :nrepl
+  {:main-opts ["-m" "nrepl.cmdline" "-i"]
+   :extra-deps
+   {nrepl/nrepl {:mvn/version "1.3.0"}}}}}
