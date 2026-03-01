@@ -38,10 +38,11 @@ In general, it will feel familiar to users of http clients like clj-http. The AP
     (license license:expat)))
 
 (define hacker-news-signature-poc
-  (let ((commit "693b05cc4c23b0f55dae5600baa104a4f0941f85"))
+  (let ((commit "270e691fa7b75f957e3b38ee4cffa67388be0371")
+        (revision "0"))
     (package
       (name "hacker-news-signature-poc")
-      (version "0.0.0")
+      (version (git-version "0.0.0" revision commit))
       (home-page "https://github.com/Buzzlabs/hacker-news-signature-poc")
       (source
        (origin
@@ -51,7 +52,7 @@ In general, it will feel familiar to users of http clients like clj-http. The AP
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hgal4ypwnyzcw06m694233p1gdv0i2h8zadbcryhcqa0p49nxwy"))))
+          (base32 "06zbjgc8kf94qmxlanvpga6cw1lf0g07g6sznz7ss5ziplzhacai"))))
       (build-system clojure-build-system)
       (propagated-inputs (list clojure-hato clojure-data-json))
       (arguments
