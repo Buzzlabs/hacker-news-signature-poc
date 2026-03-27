@@ -46,6 +46,8 @@
 (defn hn-get [endpoint]
   (hc/get (str hacker-news-url endpoint)))
 
+(defn title+hash->output [[title hash]] {:title title :hash hash})
+
 (defn -main [& args]
   (let [our-sig (-> "buzzlabs/hacker_news_signature/our_sig" io/resource slurp)
         infra-aberta-sig (first args)
@@ -60,5 +62,6 @@
       :body
       (json/read-str :key-fn keyword)
       :title
-      (sign derived-hash)
+      ((juxt identity #(sign % derived-hash)))
+      title+hash->output
       prn)))
